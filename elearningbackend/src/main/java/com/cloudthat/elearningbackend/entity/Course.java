@@ -8,6 +8,7 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.type.TrueFalseConverter;
 import org.hibernate.validator.constraints.Length;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 
@@ -49,8 +50,8 @@ public class Course {
 	
 	private Date endDate;
 	
-	@ManyToOne
-	@JoinColumn(name = "id", foreignKey = @ForeignKey(foreignKeyDefinition = "FK_FACULTY_COURSE"))
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_FACULTY_COURSE"))
 	private User faculty;
 	
 	@CreationTimestamp
