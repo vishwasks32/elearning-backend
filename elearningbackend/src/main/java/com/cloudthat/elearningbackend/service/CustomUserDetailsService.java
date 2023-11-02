@@ -18,9 +18,12 @@ public class CustomUserDetailsService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String emailId) throws UsernameNotFoundException {
 		// TODO Auto-generated method stub
-		User user = userRepository.findByEmailId(emailId);
-		if(user == null) {
-			throw new UsernameNotFoundException("User not found");
+		User user;
+		try {
+			user = userRepository.findByEmailId(emailId);
+		} catch (Exception e) {
+			// TODO: handle exception
+			throw new UsernameNotFoundException("User Name Not Found");
 		}
 		return new CustomUserDetails(user);
 	}

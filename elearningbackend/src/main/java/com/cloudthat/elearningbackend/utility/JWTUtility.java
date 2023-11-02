@@ -42,17 +42,19 @@ public class JWTUtility implements Serializable {
 
 
 	    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
-	        final Jws<Claims> claims = getAllClaimsFromToken(token);
-	        return claimsResolver.apply((Claims) claims);
+	        final Claims claims = getAllClaimsFromToken(token);
+	        return claimsResolver.apply(claims);
 	    }
 
 
 	    //for retrieving any information from token we will need the secret key
-	    private Jws<Claims> getAllClaimsFromToken(String token) {
-	        return Jwts.parser()
+	    private Claims getAllClaimsFromToken(String token) {
+	    	Claims jwsClaims = Jwts.parser()
 	        		  .verifyWith(key)
 	        		  .build()
-	        		  .parseSignedClaims(token);
+	        		  .parseSignedClaims(token).getPayload();
+	    	
+	        return jwsClaims;
 	    }
 
 

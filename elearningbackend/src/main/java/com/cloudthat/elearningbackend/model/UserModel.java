@@ -5,12 +5,10 @@ import com.cloudthat.elearningbackend.entity.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -22,6 +20,7 @@ public class UserModel {
 	@Email(message = "Enter valid email id")
 	private String email;
 	private String password;
-	private String matchingPassword;
+	private String profilePicture;
+	private String phoneNumber;
 	private Role role;
 }

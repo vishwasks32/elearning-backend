@@ -10,8 +10,8 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.cloudthat.elearningbackend.exceptions.MissingAuthorizationHeaderException;
 import com.cloudthat.elearningbackend.service.CustomUserDetailsService;
-import com.cloudthat.elearningbackend.service.UserService;
 import com.cloudthat.elearningbackend.utility.JWTUtility;
 
 import jakarta.servlet.FilterChain;
@@ -30,10 +30,17 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, FilterChain filterChain) throws ServletException, IOException {
-        String authorization = httpServletRequest.getHeader("Authorization");
+        
+    	String authorization = null;
         String token = null;
         String userName = null;
-
+        
+        try {
+			authorization = httpServletRequest.getHeader("Authorization");
+		} catch (Exception e) {
+			// TODO: handle exception
+			throw new MissingAuthorizationHeaderException("Authentication Failed, missing Authorization Header");
+		}
         if(null != authorization && authorization.startsWith("Bearer ")) {
             token = authorization.substring(7);
             userName = jwtUtility.getUsernameFromToken(token);
@@ -54,8 +61,9 @@ public class JwtFilter extends OncePerRequestFilter {
 
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
             }
-
         }
-        filterChain.doFilter(httpServletRequest, httpServletResponse);
+        
+       
+			filterChain.doFilter(httpServletRequest, httpServletResponse);
     }
 }
