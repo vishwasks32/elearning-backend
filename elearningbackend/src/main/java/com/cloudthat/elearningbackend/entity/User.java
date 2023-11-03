@@ -2,6 +2,7 @@ package com.cloudthat.elearningbackend.entity;
 
 import java.time.Instant;
 
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.type.TrueFalseConverter;
@@ -46,7 +47,6 @@ public class User {
 	private Role role;
 	@Length(min = 0, max = 255)
 	private String profilePicture;
-	@Column(columnDefinition = "default F")
 	@Convert(converter = TrueFalseConverter.class)
 	private Boolean isActive = false;
 	@CreationTimestamp
