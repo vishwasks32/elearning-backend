@@ -144,6 +144,7 @@ public class UserServiceImpl implements UserService{
 			userRepository.save(userDB);
 			
 			userProfile = new UserProfile();
+			userProfile.setId(id);
 			userProfile.setEmail(userDB.getEmailId());
 			userProfile.setFirstName(userDB.getFirstName());
 			userProfile.setLastName(userDB.getLastName());
@@ -181,6 +182,32 @@ public class UserServiceImpl implements UserService{
 					// TODO: handle exception
 					throw new DataIntegrityViolationException(null);
 				}
+	}
+
+	@Override
+	public UserProfile getUserProfile(String email) {
+		// TODO Auto-generated method stub
+		UserProfile userProfile;
+		try {
+			// TODO Auto-generated method stub
+			User user = userRepository.findByEmailId(email);
+			
+			if(!user.getIsActive()) {
+				throw new DisabledException("User account is Disabled");
+			}
+			userProfile = new UserProfile();
+			userProfile.setId(user.getId());
+			userProfile.setEmail(user.getEmailId());
+			userProfile.setFirstName(user.getFirstName());
+			userProfile.setLastName(user.getLastName());
+			userProfile.setPhoneNumber(user.getPhoneNumber());
+			userProfile.setProfilePicture(user.getProfilePicture());
+			userProfile.setRole(user.getRole());
+		} catch (Exception e) {
+			// TODO: handle exception
+			throw new ResourceNotFoundException("User","Email", email);
+		}
+		return userProfile;
 	}
 
 }

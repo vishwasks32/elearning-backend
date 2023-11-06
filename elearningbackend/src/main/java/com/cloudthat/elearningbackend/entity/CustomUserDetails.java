@@ -45,7 +45,7 @@ public class CustomUserDetails implements UserDetails {
 		// TODO Auto-generated method stub
 		return user.getEmailId();
 	}
-
+	
 	@Override
 	public boolean isAccountNonExpired() {
 		// TODO Auto-generated method stub

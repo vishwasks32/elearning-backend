@@ -10,6 +10,14 @@ spring:
         show-sql: true  
         hibernate:
             ddl-auto: update
+            
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    try-it-out-enabled: false
+    default-model-expand-depth: -1
+    
 logging:
   level:
     '[org.springframework.security]': DEBUG

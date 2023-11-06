@@ -44,80 +44,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class UserController {
 	
-    @Autowired
-    private JWTUtility jwtUtility;
-
-    @Autowired
-    private AuthenticationManager  authenticationProvider;
-	
 	@Autowired
 	private UserService userService;
-	
-    @Autowired
-    private CustomUserDetailsService customUserDetailsService;
-	
-	@Autowired
-	private ApplicationEventPublisher publisher;
-	
-	@PostMapping("register")
-	public ResponseEntity<ApiResponse> registeruser(@RequestBody UserModel userModel, final HttpServletRequest request){
-		// add check for email exists in DB
-        if(userService.existsByEmail(userModel.getEmail())){
-            return new ResponseEntity<ApiResponse>(new ApiResponse("Email is already taken!", false), HttpStatus.BAD_REQUEST);
-        }
-		User user = userService.registerUser(userModel);
-		publisher.publishEvent(new RegistrationCompleteEvent(user, applicationUrl(request)));
-        return new ResponseEntity<ApiResponse>(new ApiResponse("User created successfully", true), HttpStatus.CREATED);
-	}
-	
-    @PostMapping("login")
-    public ResponseEntity<JwtResponse> authenticate(@RequestBody JwtRequest jwtRequest) throws Exception{
-    	UsernamePasswordAuthenticationToken unauthenticatedToken = UsernamePasswordAuthenticationToken.unauthenticated(
-    			jwtRequest.getUsername(), jwtRequest.getPassword());
-        try {
-        	authenticationProvider.authenticate(
-        			unauthenticatedToken
-            );
-        } catch (BadCredentialsException e) {
-        	return new ResponseEntity<JwtResponse>(new JwtResponse(null,e.getMessage(),false),HttpStatus.UNAUTHORIZED);
-        }catch(NullPointerException ex) {
-        	return new ResponseEntity<JwtResponse>(new JwtResponse(null,"User Name Not Found",false),HttpStatus.UNAUTHORIZED);
-        }catch(DisabledException ex) {
-        	return new ResponseEntity<JwtResponse>(new JwtResponse(null,"User Account is disabled",false),HttpStatus.UNAUTHORIZED);
-        }
-
-        final UserDetails userDetails
-                = customUserDetailsService.loadUserByUsername(jwtRequest.getUsername());
-
-        final String token =
-                jwtUtility.generateToken(userDetails);
-
-        return new ResponseEntity<JwtResponse>(new JwtResponse(token,"Token generated Successfully",true),HttpStatus.OK);
-    }
-	
-	
-	@GetMapping("verifyRegistration")
-	public String verifyRegistration(@RequestParam("token") String token) {
-		String result = userService.validateVerificationToken(token);
-		if(result.equalsIgnoreCase("valid")) {
-			return "User verified Succesfully";
-		}
-		return "Bad user";
-		
-	}
-	
-	@GetMapping("resendVerifytoken")
-	public String resendVerificaionToken(@RequestParam("token") String oldToken, HttpServletRequest httpServletRequest) {
-		VerificationToken verificationToken = userService.generateNewVerificationToken(oldToken);
-		User user = verificationToken.getUser();
-		resendVerificationTokenMail(user,applicationUrl(httpServletRequest), verificationToken);
-		return "Verification link Sent";
-	}
 	
 	
 	@GetMapping("/api/v1/user/profile")
 	public ResponseEntity<ApiResponse> getUserProfile(@RequestBody UserRequest userRequest){
-			UserProfile userProfile = userService.getUserProfile(userRequest.getId());
+			UserProfile userProfile = userService.getUserProfile(userRequest.getEmail());
 			return new ResponseEntity<ApiResponse>(new ApiResponse(true, "User Fetched Successfully", userProfile), HttpStatus.OK);
 	}
 	
@@ -135,14 +68,5 @@ public class UserController {
 		return new ResponseEntity<ApiResponse>(new ApiResponse("User deleted Successfully", true), HttpStatus.OK);
 	}
 	
-	private void resendVerificationTokenMail(User user, String applicationUrl, VerificationToken verificationToken) {
-		// TODO Auto-generated method stub
-		String url = applicationUrl+ "/verifyRegistration?token="+verificationToken.getToken();
-		// just mimicking email sending here
-		log.info("URL link to verify: {}",url);
-	}
-
-	private String applicationUrl(HttpServletRequest request) {
-		return "http://"+ request.getServerName()+":"+request.getServerPort()+request.getContextPath();
-	}
+	
 }

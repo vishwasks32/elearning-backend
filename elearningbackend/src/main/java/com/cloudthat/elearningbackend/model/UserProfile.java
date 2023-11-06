@@ -14,6 +14,7 @@ import lombok.Setter;
 @Setter
 public class UserProfile {
 	//Fields Read Only
+	private Long id;
 	private String firstName;
 	private String email;
 	private Role role;

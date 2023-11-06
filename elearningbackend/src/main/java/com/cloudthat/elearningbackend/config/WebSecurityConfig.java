@@ -41,7 +41,14 @@ public class WebSecurityConfig {
 	private JwtFilter jwtFilter;
 	
 	private static final String[] PUBLIC_URLS = {
-			"/register", "/verifyRegistration**", "/resendVerifiytoken**","/login","/error"
+			"/register", 
+			"/verifyRegistration**", 
+			"/resendVerifiytoken**",
+			"/login",
+			"/error",
+			"/api-docs",
+			"/api-docs/**",
+			"/swagger-ui/**",
 		};
     
 		

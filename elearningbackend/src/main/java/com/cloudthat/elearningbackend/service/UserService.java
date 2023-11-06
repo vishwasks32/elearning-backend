@@ -23,5 +23,7 @@ public interface UserService {
 
 	void deleteUserProfile(Long id);
 
+	UserProfile getUserProfile(String email);
+
 	
 }
