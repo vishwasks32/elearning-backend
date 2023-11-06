@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.service.annotation.PutExchange;
@@ -30,6 +31,7 @@ import com.cloudthat.elearningbackend.event.RegistrationCompleteEvent;
 import com.cloudthat.elearningbackend.model.ApiResponse;
 import com.cloudthat.elearningbackend.model.JwtRequest;
 import com.cloudthat.elearningbackend.model.JwtResponse;
+import com.cloudthat.elearningbackend.model.PasswordResetRequest;
 import com.cloudthat.elearningbackend.model.UserModel;
 import com.cloudthat.elearningbackend.model.UserProfile;
 import com.cloudthat.elearningbackend.model.UserRequest;
@@ -42,31 +44,39 @@ import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @Slf4j
+@RequestMapping("/api/v1/user")
 public class UserController {
 	
 	@Autowired
 	private UserService userService;
 	
 	
-	@GetMapping("/api/v1/user/profile")
+	@GetMapping("profile")
 	public ResponseEntity<ApiResponse> getUserProfile(@RequestBody UserRequest userRequest){
 			UserProfile userProfile = userService.getUserProfile(userRequest.getEmail());
 			return new ResponseEntity<ApiResponse>(new ApiResponse(true, "User Fetched Successfully", userProfile), HttpStatus.OK);
 	}
 	
 	
-	@PutMapping("/api/v1/user/profile/{id}")
+	@PutMapping("/profile/{id}")
 	public ResponseEntity<ApiResponse> updateUserProfile(@PathVariable("id") Long id, @RequestBody UserProfile userProfile){
 		UserProfile updatedUser = userService.updateUserProfile(id, userProfile);
 		return new ResponseEntity<ApiResponse>(new ApiResponse(true, "User Updated Successfully", updatedUser), HttpStatus.OK);
 	}
 	
 	
-	@DeleteMapping("/api/v1/user/profile/{id}")
+	@DeleteMapping("/profile/{id}")
 	public ResponseEntity<ApiResponse> deleteUserProfile(@PathVariable("id") Long id){
 		userService.deleteUserProfile(id);
 		return new ResponseEntity<ApiResponse>(new ApiResponse("User deleted Successfully", true), HttpStatus.OK);
 	}
 	
+//	@PostMapping("/resetpassword")
+//	public ResponseEntity<ApiResponse> resetPassword(@RequestBody PasswordResetRequest passwordResetRequest){
+//		
+//		
+//		return new ResponseEntity<ApiResponse>(new ApiResponse("Password reset Successful", true), HttpStatus.OK);
+//		
+//	}
 	
 }

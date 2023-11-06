@@ -9,6 +9,7 @@ import org.hibernate.type.TrueFalseConverter;
 import org.hibernate.validator.constraints.Length;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 
@@ -44,10 +45,9 @@ public class Course {
 	private String courseImage;
 	
 	@Convert(converter = TrueFalseConverter.class)
-	private Boolean isActive;
+	private Boolean isActive = true;
 	
 	private Date startDate;
-	
 	private Date endDate;
 	
 	@ManyToOne(cascade = CascadeType.ALL)
@@ -56,5 +56,9 @@ public class Course {
 	
 	@CreationTimestamp
 	private Instant createdAt;
+	
+	@ManyToOne(cascade=CascadeType.ALL)
+	@JoinColumn(name="technology_id",foreignKey = @ForeignKey(name = "FK_TECH_COURSE"), nullable=false)
+	private Technology technology;
 	
 }

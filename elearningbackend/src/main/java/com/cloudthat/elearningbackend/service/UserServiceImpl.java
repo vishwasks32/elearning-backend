@@ -165,8 +165,6 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public void deleteUserProfile(Long id) {
-		// TODO Auto-generated method stub
-		// TODO Auto-generated method stub
 				User userDB;
 				try {
 					userDB = userRepository.findById(id).get();

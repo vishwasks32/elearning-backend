@@ -36,7 +36,7 @@ public class CourseContent {
 	
 	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="lesson_id",foreignKey = @ForeignKey(name = "FK_LESSON_COURSECONTENT"))
-	private Lessons lessonId;
+	private Lesson lessonId;
 	
 	
 	
