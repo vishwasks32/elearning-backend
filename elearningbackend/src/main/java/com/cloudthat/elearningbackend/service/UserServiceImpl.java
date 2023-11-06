@@ -210,4 +210,11 @@ public class UserServiceImpl implements UserService{
 		return userProfile;
 	}
 
+	@Override
+	public VerificationToken getVerificationTokenForUser(Long id) {
+		// TODO Auto-generated method stub
+		VerificationToken verificationToken = verificationTokenRepository.findByUserId(id);
+		return verificationToken;
+	}
+
 }

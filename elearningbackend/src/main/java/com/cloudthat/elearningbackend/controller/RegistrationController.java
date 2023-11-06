@@ -21,6 +21,7 @@ import com.cloudthat.elearningbackend.event.RegistrationCompleteEvent;
 import com.cloudthat.elearningbackend.model.ApiResponse;
 import com.cloudthat.elearningbackend.model.JwtRequest;
 import com.cloudthat.elearningbackend.model.JwtResponse;
+import com.cloudthat.elearningbackend.model.RegisterUserResponse;
 import com.cloudthat.elearningbackend.model.UserModel;
 import com.cloudthat.elearningbackend.service.CustomUserDetailsService;
 import com.cloudthat.elearningbackend.service.UserService;
@@ -54,8 +55,11 @@ public class RegistrationController {
             return new ResponseEntity<ApiResponse>(new ApiResponse("Email is already taken!", false), HttpStatus.BAD_REQUEST);
         }
 		User user = userService.registerUser(userModel);
+		// Instead of publishing from backend we will send the verification link from the front end
 		publisher.publishEvent(new RegistrationCompleteEvent(user, applicationUrl(request)));
-        return new ResponseEntity<ApiResponse>(new ApiResponse("User created successfully", true), HttpStatus.CREATED);
+		String verificationLink = applicationUrl(request)+ "/verifyRegistration?token="+userService.getVerificationTokenForUser(user.getId()).getToken();
+		final  RegisterUserResponse registeredUser = new RegisterUserResponse(verificationLink);
+        return new ResponseEntity<ApiResponse>(new ApiResponse(true, "User created successfully", registeredUser), HttpStatus.CREATED);
 	}
 	
     @PostMapping("login")

@@ -25,5 +25,7 @@ public interface UserService {
 
 	UserProfile getUserProfile(String email);
 
+	VerificationToken getVerificationTokenForUser(Long id);
+
 	
 }

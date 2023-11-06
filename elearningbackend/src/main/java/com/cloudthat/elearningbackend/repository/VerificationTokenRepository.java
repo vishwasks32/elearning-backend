@@ -9,5 +9,6 @@ import com.cloudthat.elearningbackend.entity.VerificationToken;
 public interface VerificationTokenRepository extends JpaRepository<VerificationToken, Long> {
 
 	VerificationToken findByToken(String oldToken);
+	VerificationToken findByUserId(Long id);
 
 }
