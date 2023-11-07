@@ -2,6 +2,8 @@ package com.cloudthat.elearningbackend.config;
 
 
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -22,6 +24,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 import com.cloudthat.elearningbackend.filter.JwtFilter;
 
 
@@ -70,8 +76,9 @@ public class WebSecurityConfig {
 		
 		@Bean
 		SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-			http.cors(cors -> cors.disable())
-			.csrf(csrf -> csrf.disable())
+			//http.cors(cors -> cors.disable())
+			http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
+			http.csrf(csrf -> csrf.disable())
 			.authorizeHttpRequests(authorize ->
 				authorize
 				.requestMatchers(PUBLIC_URLS).permitAll()
@@ -85,5 +92,15 @@ public class WebSecurityConfig {
 			
 			return http.build();
 			
+		}
+		
+		@Bean
+		CorsConfigurationSource corsConfigurationSource() {
+			CorsConfiguration configuration = new CorsConfiguration();
+			configuration.setAllowedOrigins(Arrays.asList("https://localhost:8080"));
+			configuration.setAllowedMethods(Arrays.asList("GET","POST","PUT","DELETE"));
+			UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+			source.registerCorsConfiguration("/**", configuration);
+			return source;
 		}
 }
