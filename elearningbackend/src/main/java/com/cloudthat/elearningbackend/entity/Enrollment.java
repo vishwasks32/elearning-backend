@@ -17,11 +17,11 @@ public class Enrollment {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private long enrollmentId;
 	
-	@OneToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="userId", foreignKey= @ForeignKey(name="FK_USER_ENROLLMENT"))
-	private User userId;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="student_id", foreignKey= @ForeignKey(name="FK_USER_ENROLLMENT"))
+	private User student;
 
-	@OneToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="courseId",foreignKey= @ForeignKey(name="FK_COURSE_ENROLLMENT"))
-	private Course courseId;
+	@ManyToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="course_id",foreignKey= @ForeignKey(name="FK_COURSE_ENROLLMENT"))
+	private Course course;
 }

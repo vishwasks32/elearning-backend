@@ -1,6 +1,7 @@
 package com.cloudthat.elearningbackend.entity;
 
 import java.time.Instant;
+import java.util.List;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
@@ -16,6 +17,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,6 +55,9 @@ public class User {
 	private Instant createdAt;
 	@UpdateTimestamp
 	private Instant modifiedAt;
+	
+	@OneToMany(mappedBy = "student")
+    private List<Enrollment> enrollments;
 }
 
 

@@ -15,6 +15,7 @@ spring:
       init:
         data-locations: classpath:technology_insert.sql
         #mode: always            
+     
 springdoc:
   api-docs:
     path: /api-docs

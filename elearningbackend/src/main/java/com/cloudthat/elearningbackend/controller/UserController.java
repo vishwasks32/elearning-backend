@@ -32,6 +32,7 @@ import com.cloudthat.elearningbackend.model.ApiResponse;
 import com.cloudthat.elearningbackend.model.JwtRequest;
 import com.cloudthat.elearningbackend.model.JwtResponse;
 import com.cloudthat.elearningbackend.model.PasswordResetRequest;
+import com.cloudthat.elearningbackend.model.RegisterUserResponse;
 import com.cloudthat.elearningbackend.model.UserModel;
 import com.cloudthat.elearningbackend.model.UserProfile;
 import com.cloudthat.elearningbackend.model.UserRequest;
@@ -74,9 +75,9 @@ public class UserController {
 //	@PostMapping("/resetpassword")
 //	public ResponseEntity<ApiResponse> resetPassword(@RequestBody PasswordResetRequest passwordResetRequest){
 //		
-//		
-//		return new ResponseEntity<ApiResponse>(new ApiResponse("Password reset Successful", true), HttpStatus.OK);
-//		
+//		String verificationLink = applicationUrl(request)+ "/passwordResetVerification?token="+userService.getVerificationTokenForUser(user.getId()).getToken();
+//		final  RegisterUserResponse registeredUser = new RegisterUserResponse(verificationLink);
+//        return new ResponseEntity<ApiResponse>(new ApiResponse(true, "Password Reset initiated", registeredUser), HttpStatus.ACCEPTED);		
 //	}
 	
 }

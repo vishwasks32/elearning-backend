@@ -2,6 +2,7 @@ package com.cloudthat.elearningbackend.entity;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -19,6 +20,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -51,7 +53,7 @@ public class Course {
 	private Date endDate;
 	
 	@ManyToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "FK_FACULTY_COURSE"))
+	@JoinColumn(name = "faculty_id", foreignKey = @ForeignKey(name = "FK_FACULTY_COURSE"))
 	private User faculty;
 	
 	@CreationTimestamp
@@ -60,5 +62,9 @@ public class Course {
 	@ManyToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="technology_id",foreignKey = @ForeignKey(name = "FK_TECH_COURSE"), nullable=false)
 	private Technology technology;
+	
+    // One course can have many enrollments
+    @OneToMany(mappedBy = "course", cascade = CascadeType.ALL)
+    private List<Enrollment> enrollments;
 	
 }
