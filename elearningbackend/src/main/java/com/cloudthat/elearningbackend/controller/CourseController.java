@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.cloudthat.elearningbackend.entity.Enrollment;
+import com.cloudthat.elearningbackend.entity.Lesson;
 import com.cloudthat.elearningbackend.model.ApiResponse;
 import com.cloudthat.elearningbackend.model.CourseDetails;
 import com.cloudthat.elearningbackend.model.CourseModel;
@@ -96,4 +97,11 @@ public class CourseController {
 		return new ResponseEntity<ApiResponse>(new ApiResponse(true, "Course List fetched Successfully", enrollment), HttpStatus.OK);
 	}
 	
+//	@PostMapping("/courses/{courseId}/lessons")
+//	public ResponseEntity<ApiResponse> addLesson(@PathVariable("courseId") Long courseId, @RequestBody Lesson lesson){
+//		List<CourseDetails> enrollment = courseService.getCoursesByTechnology(techId);
+//		log.info("Get Courses for technology");
+//		return new ResponseEntity<ApiResponse>(new ApiResponse(true, "Course List fetched Successfully", enrollment), HttpStatus.OK);
+//	}
+//	
 }
