@@ -27,6 +27,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.cloudthat.elearningbackend.filter.JwtFilter;
 
@@ -76,7 +78,7 @@ public class WebSecurityConfig {
 		
 		@Bean
 		SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-			http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
+//			http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
 			http.csrf(csrf -> csrf.disable())
 			.authorizeHttpRequests(authorize ->
 				authorize
@@ -90,14 +92,29 @@ public class WebSecurityConfig {
 			
 		}
 		
+//		@Bean
+//		CorsConfigurationSource corsConfigurationSource() {
+//			CorsConfiguration configuration = new CorsConfiguration();
+//		    configuration.setAllowedOrigins(Arrays.asList("*"));
+//		    configuration.setAllowedMethods(Arrays.asList("*"));
+//		    configuration.setAllowedHeaders(Arrays.asList("*"));
+//			UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//			source.registerCorsConfiguration("/**", configuration);
+//			return source;
+//		}
+		
 		@Bean
-		CorsConfigurationSource corsConfigurationSource() {
-			CorsConfiguration configuration = new CorsConfiguration();
-		    configuration.setAllowedOrigins(Arrays.asList("*"));
-		    configuration.setAllowedMethods(Arrays.asList("*"));
-		    configuration.setAllowedHeaders(Arrays.asList("*"));
-			UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-			source.registerCorsConfiguration("/**", configuration);
-			return source;
-		}
+		    public WebMvcConfigurer corsConfigurer(){
+					return new WebMvcConfigurer() {
+						@Override
+						public void addCorsMappings(CorsRegistry registry){
+							registry.addMapping("/**")
+									.allowedOrigins("*")
+									.allowedOrigins("*") // Allow any origin
+		                        	.allowedMethods("GET", "POST", "PUT", "DELETE") // Allow the specified HTTP methods
+		                        	.allowedHeaders("*"); // Allow any header
+		                         // Allow cookies
+						}
+					};
+				}
 }
