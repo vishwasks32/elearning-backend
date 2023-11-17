@@ -97,11 +97,5 @@ public class CourseController {
 		return new ResponseEntity<ApiResponse>(new ApiResponse(true, "Course List fetched Successfully", enrollment), HttpStatus.OK);
 	}
 	
-//	@PostMapping("/courses/{courseId}/lessons")
-//	public ResponseEntity<ApiResponse> addLesson(@PathVariable("courseId") Long courseId, @RequestBody Lesson lesson){
-//		List<CourseDetails> enrollment = courseService.getCoursesByTechnology(techId);
-//		log.info("Get Courses for technology");
-//		return new ResponseEntity<ApiResponse>(new ApiResponse(true, "Course List fetched Successfully", enrollment), HttpStatus.OK);
-//	}
-//	
+	
 }

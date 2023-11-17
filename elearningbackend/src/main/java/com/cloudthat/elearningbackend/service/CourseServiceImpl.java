@@ -146,7 +146,7 @@ public class CourseServiceImpl implements CourseService {
 	}
 	
 	
-	private CourseDetails courseToCourseDetails(Course course) {
+	protected CourseDetails courseToCourseDetails(Course course) {
 		CourseDetails courseDetails = new CourseDetails();
 		courseDetails.setId(course.getCourseId());
 		courseDetails.setCourseName(course.getCourseName());
@@ -222,7 +222,7 @@ public class CourseServiceImpl implements CourseService {
 		return enrollmentToEnrollmentModel(enroll);
 	}
 	
-	private EnrollmentModel enrollmentToEnrollmentModel(Enrollment enrollment) {
+	protected EnrollmentModel enrollmentToEnrollmentModel(Enrollment enrollment) {
 		EnrollmentModel enrollementModel = new EnrollmentModel();
 		enrollementModel.setEnrollmentId(enrollment.getEnrollmentId());
 		enrollementModel.setCourseId(enrollment.getCourse().getCourseId());

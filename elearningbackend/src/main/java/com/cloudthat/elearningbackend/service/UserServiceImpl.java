@@ -165,21 +165,21 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public void deleteUserProfile(Long id) {
-				User userDB;
-				try {
-					userDB = userRepository.findById(id).get();
-					if (!userDB.getIsActive()) {
-						throw new DisabledException("User account is Disabled");
-					}
-					userDB.setIsActive(false);
-					
-					userRepository.save(userDB);
-				} catch(NullPointerException ex){
-					throw new ResourceNotFoundException("User","id", id);
-				}catch (DataIntegrityViolationException e) {
-					// TODO: handle exception
-					throw new DataIntegrityViolationException(null);
-				}
+		User userDB;
+		try {
+			userDB = userRepository.findById(id).get();
+			if (!userDB.getIsActive()) {
+				throw new DisabledException("User account is Disabled");
+			}
+			userDB.setIsActive(false);
+			
+			userRepository.save(userDB);
+		} catch(NullPointerException ex){
+			throw new ResourceNotFoundException("User","id", id);
+		}catch (DataIntegrityViolationException e) {
+			// TODO: handle exception
+			throw new DataIntegrityViolationException(null);
+		}
 	}
 
 	@Override
