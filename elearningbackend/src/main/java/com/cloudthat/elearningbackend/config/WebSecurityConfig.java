@@ -57,6 +57,7 @@ public class WebSecurityConfig {
 			"/api-docs",
 			"/api-docs/**",
 			"/swagger-ui/**",
+			"/api/v1/**" // adding this for temporary frontend development ** comment it out afterwards fix on line 118**
 		};
     
 		
@@ -114,6 +115,11 @@ public class WebSecurityConfig {
 		                        	.allowedMethods("GET", "POST", "PUT", "DELETE") // Allow the specified HTTP methods
 		                        	.allowedHeaders("*"); // Allow any header
 		                         // Allow cookies
+							registry.addMapping("/api/v1/**")
+									.allowedOrigins("*")
+									.allowedOrigins("*") // Allow any origin
+			                    	.allowedMethods("GET", "POST", "PUT", "DELETE") // Allow the specified HTTP methods
+			                    	.allowedHeaders("*"); // Allow any header
 						}
 					};
 				}
