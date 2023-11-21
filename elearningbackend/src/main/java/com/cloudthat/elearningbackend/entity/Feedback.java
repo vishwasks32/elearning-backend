@@ -19,19 +19,20 @@ public class Feedback {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
-	private long feedbackId;
+	private Long id;
 	
-	@OneToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="userId", foreignKey=@ForeignKey(name="FK_USER_FEEDBACK"))
-	private User userid;
+	@ManyToOne(fetch=FetchType.EAGER)
+	private User student;
+	
+	@ManyToOne(fetch=FetchType.EAGER)
+	private User faculty;
 	
 	
-	@OneToOne(fetch=FetchType.EAGER)
-	@JoinColumn(name="courseId", foreignKey=@ForeignKey(name="FK_COURSE_FEEDBACK"))
-	private Course courseid;
+	@ManyToOne(fetch=FetchType.EAGER)
+	private Course course;
 	
 	@Length(min=0,max=255)
-	private String feedbackContent;
+	private String content;
 	
 	private int rating;
 	
