@@ -17,7 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.cloudthat.elearningbackend.model.ApiResponse;
 import com.cloudthat.elearningbackend.model.OptionModel;
 import com.cloudthat.elearningbackend.model.QuestionModel;
+import com.cloudthat.elearningbackend.model.QuizAttemptModel;
 import com.cloudthat.elearningbackend.model.QuizModel;
+import com.cloudthat.elearningbackend.model.QuizScoreModel;
 import com.cloudthat.elearningbackend.service.QuizService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -128,5 +130,25 @@ public class QuizController {
 		return new ResponseEntity<ApiResponse>(new ApiResponse(true, "Option retrieved Successfully", options), HttpStatus.OK);
 	}
 	
+	@PostMapping("/quizzes/submit")
+	public ResponseEntity<ApiResponse> attemptQuiz(@RequestBody QuizAttemptModel quizAttemptModel){
+		log.info("Attempt Quiz");
+		QuizAttemptModel quizAttempt = quizService.attemptQuiz(quizAttemptModel);
+		return new ResponseEntity<ApiResponse>(new ApiResponse(true, "Quiz Attempt Successful", quizAttempt), HttpStatus.OK);
+	}
+	
+	@GetMapping("/quizzes/{quizId}/scores")
+	public ResponseEntity<ApiResponse> getQuizScores(@PathVariable("quizId") Long quizId){
+		log.info("Quiz Score");
+		List<QuizScoreModel> quizScores = quizService.getQuizScores(quizId);
+		return new ResponseEntity<ApiResponse>(new ApiResponse(true, "Quiz scores retreived successfully", quizScores), HttpStatus.OK);
+	}
+	
+	@GetMapping("/quizzes/{quizId}/attempts")
+	public ResponseEntity<ApiResponse> getAllAttempts(@PathVariable("quizId") Long quizId){
+		log.info("Quiz Attempts");
+		List<QuizAttemptModel> quizAttempts = quizService.getAllAttempts(quizId);
+		return new ResponseEntity<ApiResponse>(new ApiResponse(true, "Quiz attempts retreived successfully", quizAttempts), HttpStatus.OK);
+	}
 	
 }

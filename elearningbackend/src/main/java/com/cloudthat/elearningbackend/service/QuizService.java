@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.cloudthat.elearningbackend.model.OptionModel;
 import com.cloudthat.elearningbackend.model.QuestionModel;
+import com.cloudthat.elearningbackend.model.QuizAttemptModel;
 import com.cloudthat.elearningbackend.model.QuizModel;
+import com.cloudthat.elearningbackend.model.QuizScoreModel;
 
 public interface QuizService {
 
@@ -35,6 +37,12 @@ public interface QuizService {
 	List<QuestionModel> getAllQuestions(Long quizId);
 
 	List<OptionModel> getAllOptions(Long quizId, Long questionId);
+
+	QuizAttemptModel attemptQuiz(QuizAttemptModel quizAttemptModel);
+
+	List<QuizScoreModel> getQuizScores(Long quizId);
+
+	List<QuizAttemptModel> getAllAttempts(Long quizId);
 
 
 }

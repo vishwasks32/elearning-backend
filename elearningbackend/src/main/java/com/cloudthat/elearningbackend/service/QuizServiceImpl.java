@@ -12,13 +12,19 @@ import org.springframework.stereotype.Service;
 import com.cloudthat.elearningbackend.entity.Options;
 import com.cloudthat.elearningbackend.entity.Question;
 import com.cloudthat.elearningbackend.entity.Quiz;
+import com.cloudthat.elearningbackend.entity.QuizAttempt;
+import com.cloudthat.elearningbackend.entity.User;
 import com.cloudthat.elearningbackend.exceptions.ResourceNotFoundException;
 import com.cloudthat.elearningbackend.model.OptionModel;
 import com.cloudthat.elearningbackend.model.QuestionModel;
+import com.cloudthat.elearningbackend.model.QuizAttemptModel;
 import com.cloudthat.elearningbackend.model.QuizModel;
+import com.cloudthat.elearningbackend.model.QuizScoreModel;
 import com.cloudthat.elearningbackend.repository.OptionRepository;
 import com.cloudthat.elearningbackend.repository.QuestionRepository;
+import com.cloudthat.elearningbackend.repository.QuizAttemptRepository;
 import com.cloudthat.elearningbackend.repository.QuizRepository;
+import com.cloudthat.elearningbackend.repository.UserRepository;
 
 @Service
 public class QuizServiceImpl implements QuizService {
@@ -31,6 +37,12 @@ public class QuizServiceImpl implements QuizService {
 	
 	@Autowired
 	OptionRepository optionRepository;
+	
+	@Autowired
+	UserRepository userRepository;
+	
+	@Autowired
+	QuizAttemptRepository quizAttemptRepository;
 	
 	protected Quiz quizModelToQuiz(QuizModel quizModel) {
 		Quiz quiz = new Quiz();
@@ -50,14 +62,6 @@ public class QuizServiceImpl implements QuizService {
 		quizModel.setDescription(quiz.getDescription());
 		quizModel.setDuration(quiz.getDuration());
 		
-//		List<Question> questions = questionRepository.findAllByQuiz(quiz);
-//		List<QuestionModel> questionList = new ArrayList<QuestionModel>();
-//		for(Question q: questions) {
-//			questionList.add(questionToQuestionModel(q));
-//		}
-//		
-//		quizModel.setQuestions(questionList);
-		
 		return quizModel;
 	}
 	
@@ -65,7 +69,6 @@ public class QuizServiceImpl implements QuizService {
 		Question question = new Question();
 		question.setQuestionText(questionModel.getText());
 		question.setQuestionImage(questionModel.getImage());
-//		question.setOptions(questionModel.getOptions());
 		
 		Quiz quizDB;
 		
@@ -125,6 +128,64 @@ public class QuizServiceImpl implements QuizService {
 		return optionModel;
 	}
 	
+	protected QuizAttempt quizAttemptModelToQuizAttempt(QuizAttemptModel quizAttemptModel) {
+		QuizAttempt quizAttempt = new QuizAttempt();
+		
+		Quiz quiz;
+		
+		try {
+			quiz = quizRepository.findById(quizAttemptModel.getQuizId()).get();
+			if(quiz.getIsActive().equals(false)) {
+				throw new DataIntegrityViolationException("The quiz is disabled.");
+			}
+		} catch (NoSuchElementException e) {
+			// TODO: handle exception
+			throw new ResourceNotFoundException("Quiz", "Id", quizAttemptModel.getQuizId());
+		}
+		
+		User student;
+		
+		try {
+			student = userRepository.findById(quizAttemptModel.getStudentId()).get();
+		} catch (NoSuchElementException e) {
+			// TODO: handle exception
+			throw new ResourceNotFoundException("Student", "Id", quizAttemptModel.getStudentId());
+		}
+		
+		// If Only one attempt to be considered for a quiz
+		QuizAttempt quizAttemptDB = quizAttemptRepository.findByStudentAndQuiz(student,quiz);
+		if(Objects.nonNull(quizAttemptDB)) {
+			throw new DataIntegrityViolationException("Cannot add attempt again");
+		}
+		
+		// If StartTime and EndTime are same
+		if(quizAttemptModel.getStartTime().isAfter(quizAttemptModel.getEndTime())) {
+			throw new DataIntegrityViolationException("End Time cannot be after Start Time");
+		}
+		
+		quizAttempt.setQuiz(quiz);
+		quizAttempt.setStudent(student);
+		
+		quizAttempt.setStartTime(quizAttemptModel.getStartTime());
+		quizAttempt.setEndTime(quizAttemptModel.getEndTime());
+		quizAttempt.setScore(quizAttemptModel.getScore());
+		
+		return quizAttempt;
+		
+	}
+	
+	protected QuizAttemptModel quizAttemptToQuizAttemptModel(QuizAttempt quizAttempt) {
+		QuizAttemptModel quizAttemptModel = new QuizAttemptModel();
+		
+		quizAttemptModel.setId(quizAttempt.getId());
+		quizAttemptModel.setQuizId(quizAttempt.getQuiz().getId());
+		quizAttemptModel.setStudentId(quizAttempt.getStudent().getId());
+		quizAttemptModel.setStartTime(quizAttempt.getStartTime());
+		quizAttemptModel.setEndTime(quizAttempt.getEndTime());
+		quizAttemptModel.setScore(quizAttempt.getScore());
+		return quizAttemptModel;
+	}
+	
 	@Override
 	public QuizModel addQuiz(QuizModel quizModel) {
 		Quiz quiz;
@@ -172,10 +233,6 @@ public class QuizServiceImpl implements QuizService {
 		if (Objects.nonNull(quizModel.getDuration())) {
 			quizDB.setDuration(quizModel.getDuration());;
 		}
-//		
-//		if (Objects.nonNull(quizModel.Questions())) {
-//			quizDB.setQuizQuestions(quizModel.getQuizQuestions());
-//		}
 		
 		quizRepository.save(quizDB);
 		
@@ -251,9 +308,6 @@ public class QuizServiceImpl implements QuizService {
 			questionDB.setQuiz(quiz);
 		}
 		
-//		if (Objects.nonNull(questionModel.getOptions())) {
-//			questionDB.setOptions(questionModel.getOptions());;
-//		}
 		
 		questionRepository.save(questionDB);
 		return questionToQuestionModel(questionDB);
@@ -395,6 +449,61 @@ public class QuizServiceImpl implements QuizService {
 		}
 		
 		return optionsList;
+	}
+
+	@Override
+	public QuizAttemptModel attemptQuiz(QuizAttemptModel quizAttemptModel) {
+		// TODO Auto-generated method stub
+		QuizAttempt quizAttempt = quizAttemptRepository.save(quizAttemptModelToQuizAttempt(quizAttemptModel));
+		return quizAttemptToQuizAttemptModel(quizAttempt);
+	}
+
+	@Override
+	public List<QuizScoreModel> getQuizScores(Long quizId) {
+		// TODO Auto-generated method stub
+		Quiz quiz;
+		try {
+			quiz = quizRepository.findById(quizId).get();
+		} catch (NoSuchElementException e) {
+			// TODO: handle exception
+			throw new ResourceNotFoundException("Quiz", "Id", quizId);
+		}
+		
+		List<QuizAttempt> quizAttempts;
+		quizAttempts = quizAttemptRepository.findAllByQuiz(quiz);
+		
+		List<QuizScoreModel> quizScores = new ArrayList<QuizScoreModel>();
+		for(QuizAttempt qa: quizAttempts) {
+			QuizScoreModel quizScore = new QuizScoreModel();
+			quizScore.setId(qa.getId());
+			quizScore.setStudentId(qa.getStudent().getId());
+			quizScore.setScore(qa.getScore());
+			
+			quizScores.add(quizScore);
+		}
+		return quizScores;
+	}
+
+	@Override
+	public List<QuizAttemptModel> getAllAttempts(Long quizId) {
+		// TODO Auto-generated method stub
+		Quiz quiz;
+		try {
+			quiz = quizRepository.findById(quizId).get();
+		} catch (NoSuchElementException e) {
+			// TODO: handle exception
+			throw new ResourceNotFoundException("Quiz", "Id", quizId);
+		}
+		
+		List<QuizAttempt> quizAttempts;
+		quizAttempts = quizAttemptRepository.findAllByQuiz(quiz);
+		
+		List<QuizAttemptModel> quizAttemptsList = new ArrayList<QuizAttemptModel>();
+		for(QuizAttempt qa: quizAttempts) {
+			quizAttemptsList.add(quizAttemptToQuizAttemptModel(qa));
+		}
+		
+		return quizAttemptsList;
 	}
 	
 	
