@@ -107,6 +107,7 @@ public class UserServiceImpl implements UserService{
 				throw new DisabledException("User account is Disabled");
 			}
 			userProfile = new UserProfile();
+			userProfile.setId(id);
 			userProfile.setEmail(user.getEmailId());
 			userProfile.setFirstName(user.getFirstName());
 			userProfile.setLastName(user.getLastName());

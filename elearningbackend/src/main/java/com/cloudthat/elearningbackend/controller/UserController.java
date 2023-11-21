@@ -52,9 +52,15 @@ public class UserController {
 	private UserService userService;
 	
 	
-	@GetMapping("profile")
-	public ResponseEntity<ApiResponse> getUserProfile(@RequestBody UserRequest userRequest){
-			UserProfile userProfile = userService.getUserProfile(userRequest.getEmail());
+//	@GetMapping("profile")
+//	public ResponseEntity<ApiResponse> getUserProfile(@RequestBody UserRequest userRequest){
+//			UserProfile userProfile = userService.getUserProfile(userRequest.getEmail());
+//			return new ResponseEntity<ApiResponse>(new ApiResponse(true, "User Fetched Successfully", userProfile), HttpStatus.OK);
+//	}
+	
+	@GetMapping("/{userId}/profile")
+	public ResponseEntity<ApiResponse> getUserProfile(@PathVariable("userId") Long userId){
+			UserProfile userProfile = userService.getUserProfile(userId);
 			return new ResponseEntity<ApiResponse>(new ApiResponse(true, "User Fetched Successfully", userProfile), HttpStatus.OK);
 	}
 	
