@@ -209,6 +209,12 @@ public class CourseServiceImpl implements CourseService {
 			throw new ResourceAccessException("The user cannot be enrolled a course");
 		}
 		
+		// Check if student is already enrolled in course
+		Enrollment enrollment = enrollmentRepository.findByStudentAndCourse(studentDB, courseDB);
+		if(Objects.nonNull(enrollment)) {
+			throw new DataIntegrityViolationException("Student is already enrolled in course");
+		}
+		
 		Enrollment enroll = new Enrollment();
 		enroll.setCourse(courseDB);
 		enroll.setStudent(studentDB);

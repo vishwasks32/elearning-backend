@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
+import com.cloudthat.elearningbackend.entity.Content;
 import com.cloudthat.elearningbackend.entity.Options;
 import com.cloudthat.elearningbackend.entity.Question;
 import com.cloudthat.elearningbackend.entity.Quiz;
@@ -25,6 +26,7 @@ import com.cloudthat.elearningbackend.repository.QuestionRepository;
 import com.cloudthat.elearningbackend.repository.QuizAttemptRepository;
 import com.cloudthat.elearningbackend.repository.QuizRepository;
 import com.cloudthat.elearningbackend.repository.UserRepository;
+import com.cloudthat.elearningbackend.repository.ContentRepository;
 
 @Service
 public class QuizServiceImpl implements QuizService {
@@ -43,6 +45,9 @@ public class QuizServiceImpl implements QuizService {
 	
 	@Autowired
 	QuizAttemptRepository quizAttemptRepository;
+	
+	@Autowired
+	ContentRepository contentRepository;
 	
 	protected Quiz quizModelToQuiz(QuizModel quizModel) {
 		Quiz quiz = new Quiz();
